@@ -1,0 +1,9 @@
+/usr/bin/amazon-ssm-agent               --      gen_context(system_u:object_r:amazon_ssm_agent_exec_t,s0)
+
+/usr/bin/ssm-session-worker             --      gen_context(system_u:object_r:amazon_ssm_agent_exec_t,s0)
+
+/usr/lib/systemd/system/amazon-ssm-agent.service                --      gen_context(system_u:object_r:amazon_ssm_agent_unit_file_t,s0)
+
+/var/lib/amazon/ssm(/.*)?               gen_context(system_u:object_r:amazon_ssm_agent_var_lib_t,s0)
+
+/var/log/amazon/ssm(/.*)?               gen_context(system_u:object_r:amazon_ssm_agent_log_t,s0)
