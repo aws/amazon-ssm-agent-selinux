@@ -1,10 +1,10 @@
 ## AMAZON-SSM-AGENT-SELINUX POLICY
 
-This is the SELinux policy for Amazon SSM agent. Install this policy to confine your SSM agentt processes.
+This is the SELinux policy for AWS SSM agent. Install this policy to confine your SSM agent processes.
 
 ## Installation instructions
 
-To build and Install the SELinux policy, make sure that SELinux is in permissive or enforcing mode in `/etc/selinux/config` file
+To build and install the SELinux policy, make sure that SELinux is in permissive or enforcing mode in `/etc/selinux/config` file:
 
 Run the following commands:
 ```
