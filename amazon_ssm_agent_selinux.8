@@ -1,0 +1,362 @@
+.TH  "amazon_ssm_agent_selinux"  "8"  "22-12-05" "amazon_ssm_agent" "SELinux Policy amazon_ssm_agent"
+.SH "NAME"
+amazon_ssm_agent_selinux \- Security Enhanced Linux Policy for the amazon_ssm_agent processes
+.SH "DESCRIPTION"
+
+Security-Enhanced Linux secures the amazon_ssm_agent processes via flexible mandatory access control.
+
+The amazon_ssm_agent processes execute with the amazon_ssm_agent_t SELinux type. You can check if you have these processes running by executing the \fBps\fP command with the \fB\-Z\fP qualifier.
+
+For example:
+
+.B ps -eZ | grep amazon_ssm_agent_t
+
+
+.SH "ENTRYPOINTS"
+
+The amazon_ssm_agent_t SELinux type can be entered via the \fBamazon_ssm_agent_exec_t\fP file type.
+
+The default entrypoint paths for the amazon_ssm_agent_t domain are the following:
+
+/usr/bin/amazon-ssm-agent
+.SH PROCESS TYPES
+SELinux defines process types (domains) for each process running on the system
+.PP
+You can see the context of a process using the \fB\-Z\fP option to \fBps\bP
+.PP
+Policy governs the access confined processes have to files.
+SELinux amazon_ssm_agent policy is very flexible allowing users to setup their amazon_ssm_agent processes in as secure a method as possible.
+.PP
+The following process types are defined for amazon_ssm_agent:
+
+.EX
+.B amazon_ssm_agent_t
+.EE
+.PP
+Note:
+.B semanage permissive -a amazon_ssm_agent_t
+can be used to make the process type amazon_ssm_agent_t permissive. SELinux does not deny access to permissive process types, but the AVC (SELinux denials) messages are still generated.
+
+.SH BOOLEANS
+SELinux policy is customizable based on least access required.  amazon_ssm_agent policy is extremely flexible and has several booleans that allow you to manipulate the policy and run amazon_ssm_agent with the tightest access possible.
+
+
+.PP
+If you want to allow all daemons to write corefiles to /, you must turn on the daemons_dump_core boolean. Disabled by default.
+
+.EX
+.B setsebool -P daemons_dump_core 1
+
+.EE
+
+.PP
+If you want to enable cluster mode for daemons, you must turn on the daemons_enable_cluster_mode boolean. Disabled by default.
+
+.EX
+.B setsebool -P daemons_enable_cluster_mode 1
+
+.EE
+
+.PP
+If you want to allow all daemons to use tcp wrappers, you must turn on the daemons_use_tcp_wrapper boolean. Disabled by default.
+
+.EX
+.B setsebool -P daemons_use_tcp_wrapper 1
+
+.EE
+
+.PP
+If you want to allow all daemons the ability to read/write terminals, you must turn on the daemons_use_tty boolean. Disabled by default.
+
+.EX
+.B setsebool -P daemons_use_tty 1
+
+.EE
+
+.PP
+If you want to deny any process from ptracing or debugging any other processes, you must turn on the deny_ptrace boolean. Disabled by default.
+
+.EX
+.B setsebool -P deny_ptrace 1
+
+.EE
+
+.PP
+If you want to allow any process to mmap any file on system with attribute file_type, you must turn on the domain_can_mmap_files boolean. Enabled by default.
+
+.EX
+.B setsebool -P domain_can_mmap_files 1
+
+.EE
+
+.PP
+If you want to allow all domains write to kmsg_device, while kernel is executed with systemd.log_target=kmsg parameter, you must turn on the domain_can_write_kmsg boolean. Disabled by default.
+
+.EX
+.B setsebool -P domain_can_write_kmsg 1
+
+.EE
+
+.PP
+If you want to allow all domains to use other domains file descriptors, you must turn on the domain_fd_use boolean. Enabled by default.
+
+.EX
+.B setsebool -P domain_fd_use 1
+
+.EE
+
+.PP
+If you want to allow all domains to have the kernel load modules, you must turn on the domain_kernel_load_modules boolean. Disabled by default.
+
+.EX
+.B setsebool -P domain_kernel_load_modules 1
+
+.EE
+
+.PP
+If you want to allow all domains to execute in fips_mode, you must turn on the fips_mode boolean. Enabled by default.
+
+.EX
+.B setsebool -P fips_mode 1
+
+.EE
+
+.PP
+If you want to enable reading of urandom for all domains, you must turn on the global_ssp boolean. Disabled by default.
+
+.EX
+.B setsebool -P global_ssp 1
+
+.EE
+
+.SH "MANAGED FILES"
+
+The SELinux process type amazon_ssm_agent_t can manage files labeled with the following file types.  The paths listed are the default paths for these file types.  Note the processes UID still need to have DAC permissions.
+
+.br
+.B amazon_ssm_agent_var_lib_t
+
+	/var/lib/amazon/ssm(/.*)?
+.br
+
+.br
+.B cluster_conf_t
+
+	/etc/cluster(/.*)?
+.br
+
+.br
+.B cluster_var_lib_t
+
+	/var/lib/pcsd(/.*)?
+.br
+	/var/lib/cluster(/.*)?
+.br
+	/var/lib/openais(/.*)?
+.br
+	/var/lib/pengine(/.*)?
+.br
+	/var/lib/corosync(/.*)?
+.br
+	/usr/lib/heartbeat(/.*)?
+.br
+	/var/lib/heartbeat(/.*)?
+.br
+	/var/lib/pacemaker(/.*)?
+.br
+
+.br
+.B cluster_var_run_t
+
+	/var/run/crm(/.*)?
+.br
+	/var/run/cman_.*
+.br
+	/var/run/rsctmp(/.*)?
+.br
+	/var/run/aisexec.*
+.br
+	/var/run/heartbeat(/.*)?
+.br
+	/var/run/corosync-qnetd(/.*)?
+.br
+	/var/run/corosync-qdevice(/.*)?
+.br
+	/var/run/cpglockd\.pid
+.br
+	/var/run/corosync\.pid
+.br
+	/var/run/rgmanager\.pid
+.br
+	/var/run/cluster/rgmanager\.sk
+.br
+
+.br
+.B klogd_tmp_t
+
+
+.br
+.B klogd_var_run_t
+
+	/var/run/klogd\.pid
+.br
+
+.br
+.B logfile
+
+	all log files
+.br
+
+.br
+.B root_t
+
+	/sysroot/ostree/deploy/.*-atomic.*/deploy(/.*)?
+.br
+	/
+.br
+	/initrd
+.br
+
+.br
+.B sshd_unit_file_t
+
+	/usr/lib/systemd/system/sshd.*
+.br
+
+.br
+.B syslog_conf_t
+
+	/etc/syslog.conf
+.br
+	/etc/rsyslog.conf
+.br
+	/etc/rsyslog.d(/.*)?
+.br
+
+.br
+.B syslogd_tmp_t
+
+
+.br
+.B syslogd_var_lib_t
+
+	/var/lib/r?syslog(/.*)?
+.br
+	/var/lib/syslog-ng(/.*)?
+.br
+	/var/lib/syslog-ng.persist
+.br
+	/var/lib/misc/syslog-ng.persist-?
+.br
+
+.br
+.B syslogd_var_run_t
+
+	/var/run/log(/.*)?
+.br
+	/var/run/syslog-ng.ctl
+.br
+	/var/run/syslog-ng(/.*)?
+.br
+	/var/run/systemd/journal(/.*)?
+.br
+	/var/run/metalog\.pid
+.br
+	/var/run/syslogd\.pid
+.br
+
+.br
+.B systemd_passwd_var_run_t
+
+	/var/run/systemd/ask-password(/.*)?
+.br
+	/var/run/systemd/ask-password-block(/.*)?
+.br
+
+.SH FILE CONTEXTS
+SELinux requires files to have an extended attribute to define the file type.
+.PP
+You can see the context of a file using the \fB\-Z\fP option to \fBls\bP
+.PP
+Policy governs the access confined processes have to these files.
+SELinux amazon_ssm_agent policy is very flexible allowing users to setup their amazon_ssm_agent processes in as secure a method as possible.
+.PP
+
+.PP
+.B STANDARD FILE CONTEXT
+
+SELinux defines the file context types for the amazon_ssm_agent, if you wanted to
+store files with these types in a diffent paths, you need to execute the semanage command to sepecify alternate labeling and then use restorecon to put the labels on disk.
+
+.B semanage fcontext -a -t amazon_ssm_agent_var_lib_t '/srv/myamazon_ssm_agent_content(/.*)?'
+.br
+.B restorecon -R -v /srv/myamazon_ssm_agent_content
+
+Note: SELinux often uses regular expressions to specify labels that match multiple files.
+
+.I The following file types are defined for amazon_ssm_agent:
+
+
+.EX
+.PP
+.B amazon_ssm_agent_exec_t
+.EE
+
+- Set files with the amazon_ssm_agent_exec_t type, if you want to transition an executable to the amazon_ssm_agent_t domain.
+
+
+.EX
+.PP
+.B amazon_ssm_agent_log_t
+.EE
+
+- Set files with the amazon_ssm_agent_log_t type, if you want to treat the data as amazon ssm agent log data, usually stored under the /var/log directory.
+
+
+.EX
+.PP
+.B amazon_ssm_agent_unit_file_t
+.EE
+
+- Set files with the amazon_ssm_agent_unit_file_t type, if you want to treat the files as amazon ssm agent unit content.
+
+
+.EX
+.PP
+.B amazon_ssm_agent_var_lib_t
+.EE
+
+- Set files with the amazon_ssm_agent_var_lib_t type, if you want to store the amazon ssm agent files under the /var/lib directory.
+
+
+.PP
+Note: File context can be temporarily modified with the chcon command.  If you want to permanently change the file context you need to use the
+.B semanage fcontext
+command.  This will modify the SELinux labeling database.  You will need to use
+.B restorecon
+to apply the labels.
+
+.SH "COMMANDS"
+.B semanage fcontext
+can also be used to manipulate default file context mappings.
+.PP
+.B semanage permissive
+can also be used to manipulate whether or not a process type is permissive.
+.PP
+.B semanage module
+can also be used to enable/disable/install/remove policy modules.
+
+.B semanage boolean
+can also be used to manipulate the booleans
+
+.PP
+.B system-config-selinux
+is a GUI tool available to customize SELinux policy settings.
+
+.SH AUTHOR
+This manual page was auto-generated using
+.B "sepolicy manpage".
+
+.SH "SEE ALSO"
+selinux(8), amazon_ssm_agent(8), semanage(8), restorecon(8), chcon(1), sepolicy(8)
+, setsebool(8)
