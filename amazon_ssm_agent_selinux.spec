@@ -17,7 +17,7 @@ Summary:	SELinux policy module for amazon_ssm_agent
 Group:	System Environment/Base		
 License:	GPLv2+	
 # This is an example. You will need to change it.
-URL:		https://github.com
+URL:		https://github.com/aws/amazon-ssm-agent-selinux
 Source0:	amazon_ssm_agent.pp
 Source1:	amazon_ssm_agent.if
 Source2:	amazon_ssm_agent_selinux.8
