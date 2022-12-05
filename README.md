@@ -1,6 +1,6 @@
-## My Project
+## AMAZON-SSM-AGENT-SELINUX POLICY
 
-TODO: Fill this README out!
+This is the SELinux policy for Amazon SSM agent. Install this policy to confine your SSM agentt processes.
 
 Be sure to:
 
@@ -14,5 +14,5 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the LICENSE NAME HERE License.
+This library is licensed under the GNU GPL v2 License.
 
