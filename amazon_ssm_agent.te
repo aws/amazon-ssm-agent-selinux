@@ -9,6 +9,7 @@ type amazon_ssm_agent_t;
 type amazon_ssm_agent_exec_t;
 init_daemon_domain(amazon_ssm_agent_t, amazon_ssm_agent_exec_t)
 
+
 type amazon_ssm_agent_log_t;
 logging_log_file(amazon_ssm_agent_log_t)
 
@@ -28,27 +29,72 @@ allow amazon_ssm_agent_t self:unix_stream_socket { create_stream_socket_perms co
 optional {
 
         require {
-        class netlink_route_socket { bind create getattr nlmsg_read };
+        type kernel_t;
+        type useradd_exec_t;
+        type amazon_ssm_agent_unit_file_t;
+        type bin_t;
+        type var_run_t;
+        type etc_t;
+        type usr_t;
+        type rpm_exec_t;
+        type rpm_script_t;
+        type syslog_conf_t;
+        type system_dbusd_t;
+        type var_log_t;
+        type var_run_t;
+        type systemd_unit_file_t;
+        class netlink_audit_socket { read write create nlmsg_relay };
+        class netlink_route_socket { bind create getattr nlmsg_read read write };
         class udp_socket { connect create getattr getopt setopt read write sendto };
-        class process setpgid;
         class unix_stream_socket connectto;
-        class tcp_socket { connect create getattr getopt setopt read write sendto };
-        class file { open read execute };
-        class lnk_file { relabelfrom };
+        class tcp_socket { connect create getattr getopt setopt read write sendto bind };
+        class file { open read execute unlink create relabelfrom relabelto rename setattr write execute_no_trans };
+        class lnk_file { relabelfrom relabelto };
         class sock_file { create unlink write getattr};
-        class dir { getattr search };
+        class dir { getattr search relabelfrom relabelto remove_name add_name create write read };
+        class process { setexec execmem setrlimit setpgid noatsecure rlimitinh siginh setfscreate setsched };
+        class capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
+        class service { start status };
+        class passwd passwd;
+        class netlink_selinux_socket { bind create };
+        class key write;
+
         }
 
-        allow amazon_ssm_agent_t self:netlink_route_socket { bind create getattr nlmsg_read };
+        allow amazon_ssm_agent_t self:netlink_route_socket { bind create getattr nlmsg_read read write };
         allow amazon_ssm_agent_t self:udp_socket { connect create getattr getopt setopt read write sendto };
         allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:sock_file { create unlink write getattr };
-        allow amazon_ssm_agent_t self:process setpgid;
-        allow amazon_ssm_agent_t self:tcp_socket { connect create getattr getopt setopt read write sendto };
+        allow amazon_ssm_agent_t self:tcp_socket { connect create getattr getopt setopt read write sendto bind };
         allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:file { execute execute_no_trans };
-        allow amazon_ssm_agent_t self:netlink_audit_socket { create nlmsg_relay };
+        allow amazon_ssm_agent_t self:netlink_audit_socket { read write create nlmsg_relay  };
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:file execute;
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:lnk_file relabelfrom;
-
+        allow amazon_ssm_agent_t var_run_t:file { create unlink };
+        allow amazon_ssm_agent_t rpm_exec_t:file relabelto;
+        allow amazon_ssm_agent_t self:process { setexec execmem setrlimit setpgid noatsecure rlimitinh siginh setfscreate setsched };
+        allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
+        allow amazon_ssm_agent_t system_dbusd_t:dir { getattr search };
+        allow amazon_ssm_agent_t system_dbusd_t:file { open read };
+        allow amazon_ssm_agent_t bin_t:dir relabelto;
+        allow amazon_ssm_agent_t bin_t:lnk_file { relabelfrom relabelto };
+        allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr };
+        allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };      
+        allow amazon_ssm_agent_t rpm_script_t:process { noatsecure rlimitinh siginh };
+        allow amazon_ssm_agent_t syslog_conf_t:file relabelfrom;
+        allow amazon_ssm_agent_t systemd_unit_file_t:dir { add_name remove_name write };
+        allow amazon_ssm_agent_t systemd_unit_file_t:file { create open relabelfrom relabelto rename setattr write getattr unlink };
+        allow amazon_ssm_agent_t usr_t:dir { relabelfrom relabelto };
+        allow amazon_ssm_agent_t usr_t:file { relabelfrom relabelto };
+        allow amazon_ssm_agent_t var_log_t:lnk_file relabelto;
+        allow amazon_ssm_agent_t var_run_t:dir { create relabelfrom relabelto };
+        allow amazon_ssm_agent_t var_run_t:lnk_file { relabelfrom relabelto };  
+        allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:service { start status };
+        allow amazon_ssm_agent_t self:netlink_audit_socket write;
+        allow amazon_ssm_agent_t self:passwd passwd;
+        allow amazon_ssm_agent_t self:netlink_selinux_socket { bind create };
+        allow amazon_ssm_agent_t self:key write;
+        allow amazon_ssm_agent_t useradd_exec_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t kernel_t:dir read;
 
 }
 
@@ -212,11 +258,24 @@ mta_getattr_spool(amazon_ssm_agent_t)
 
 mta_read_spool(amazon_ssm_agent_t)
 
+files_rw_generic_pids(amazon_ssm_agent_t)
+
+systemd_dbus_chat_logind(amazon_ssm_agent_t)
+
+init_status(amazon_ssm_agent_t)
+
+seutil_read_config(amazon_ssm_agent_t)
+
+term_use_unallocated_ttys(amazon_ssm_agent_t)
+
+files_delete_etc_files(amazon_ssm_agent_t)
+
+systemd_write_inherited_logind_sessions_pipes(amazon_ssm_agent_t)
 
 optional {
-	gen_require(`
+        gen_require(`
                 type syslogd_var_run_t;
-		class file { map };
+                class file { map };
         ')
 
         allow amazon_ssm_agent_t syslogd_var_run_t:file map;
@@ -225,7 +284,7 @@ optional {
 
 optional {
 
-	gen_require(`
+        gen_require(`
                 type systemd_userdbd_runtime_t;
         ')
 
@@ -235,7 +294,7 @@ optional {
 
 optional {
 
-	gen_require(`
+        gen_require(`
         type systemd_userdbd_t;
         type systemd_userdbd_runtime_t;
         ')
@@ -261,31 +320,31 @@ optional {
 }
 
 optional_policy(`
-	container_spc_read_state(amazon_ssm_agent_t)
-	container_read_pid_files(amazon_ssm_agent_t)
-	container_runtime_exec(amazon_ssm_agent_t)
+        container_spc_read_state(amazon_ssm_agent_t)
+        container_read_pid_files(amazon_ssm_agent_t)
+        container_runtime_exec(amazon_ssm_agent_t)
 ')
 
 optional_policy(`
-	rpm_manage_cache(amazon_ssm_agent_t)
-	rpm_read_cache(amazon_ssm_agent_t)
+        rpm_manage_cache(amazon_ssm_agent_t)
+        rpm_read_cache(amazon_ssm_agent_t)
         rpm_delete_db(amazon_ssm_agent_t)
         rpm_exec(amazon_ssm_agent_t)
         rpm_manage_db(amazon_ssm_agent_t)
-	files_manage_system_conf_files(amazon_ssm_agent_t)
-	libs_manage_lib_files(amazon_ssm_agent_t)
-	files_rw_usr_dirs(amazon_ssm_agent_t)
-	auth_manage_passwd(amazon_ssm_agent_t)
-	auth_manage_shadow(amazon_ssm_agent_t)
-	mta_append_spool(amazon_ssm_agent_t)
-	mta_rw_spool(amazon_ssm_agent_t)
-	quota_filetrans_named_content(amazon_ssm_agent_t)
-	selinux_validate_context(amazon_ssm_agent_t)
-	userdom_create_user_home_dirs(amazon_ssm_agent_t)
-	userdom_manage_user_home_content_files(amazon_ssm_agent_t)
-	files_list_kernel_modules(amazon_ssm_agent_t)
-	files_manage_generic_tmp_dirs(amazon_ssm_agent_t)
-	corecmd_manage_all_executables(amazon_ssm_agent_t)
+        files_manage_system_conf_files(amazon_ssm_agent_t)
+        libs_manage_lib_files(amazon_ssm_agent_t)
+        files_rw_usr_dirs(amazon_ssm_agent_t)
+        auth_manage_passwd(amazon_ssm_agent_t)
+        auth_manage_shadow(amazon_ssm_agent_t)
+        mta_append_spool(amazon_ssm_agent_t)
+        mta_rw_spool(amazon_ssm_agent_t)
+        quota_filetrans_named_content(amazon_ssm_agent_t)
+        selinux_validate_context(amazon_ssm_agent_t)
+        userdom_create_user_home_dirs(amazon_ssm_agent_t)
+        userdom_manage_user_home_content_files(amazon_ssm_agent_t)
+        files_list_kernel_modules(amazon_ssm_agent_t)
+        files_manage_generic_tmp_dirs(amazon_ssm_agent_t)
+        corecmd_manage_all_executables(amazon_ssm_agent_t)
         files_manage_etc_symlinks(amazon_ssm_agent_t)
         files_manage_generic_pids_symlinks(amazon_ssm_agent_t)
         files_manage_usr_files(amazon_ssm_agent_t)
@@ -293,16 +352,16 @@ optional_policy(`
 
 optional {
 
-	gen_require(`
-		type container_runtime_t;
-	')
-		ps_process_pattern(amazon_ssm_agent_t, container_runtime_t)
+        gen_require(`
+                type container_runtime_t;
+        ')
+                ps_process_pattern(amazon_ssm_agent_t, container_runtime_t)
 }
 
 
 optional {
 
-	        gen_require(`
+                gen_require(`
                 type systemd_logind_t;
         ')
 
@@ -312,7 +371,7 @@ optional {
 }
 
 optional {
-	        gen_require(`
+                gen_require(`
                 type system_dbusd_t;
         ')
 
