@@ -54,8 +54,8 @@ sepolicy manpage -p . -d amazon_ssm_agent_t
 /sbin/restorecon -R -v /var/lib/amazon/ssm/ipc/termination
 # Fixing the file context on /usr/bin/ssm-session-worker
 /sbin/restorecon -R -v /usr/bin/ssm-session-worker
-# Fixing the file context /etc/systemd/system/amazon-ssm-agent.service
-/sbin/restorecon -R -v /etc/systemd/system/amazon-ssm-agent.service
+# Fixing the file context on /usr/lib/systemd/system/amazon-ssm-agent.service
+/sbin/restorecon -F -R -v /usr/lib/systemd/system/amazon-ssm-agent.service
 # # Generate a rpm package for the newly generated policy
 
 pwd=$(pwd)
