@@ -29,21 +29,21 @@ optional {
 
         require {
         class netlink_route_socket { bind create getattr nlmsg_read };
-        class udp_socket { connect create getattr setopt };
+        class udp_socket { connect create getattr getopt setopt read write sendto };
         class process setpgid;
         class unix_stream_socket connectto;
-        class tcp_socket { connect create getattr getopt setopt };
+        class tcp_socket { connect create getattr getopt setopt read write sendto };
         class file { open read execute };
         class lnk_file { relabelfrom };
-        class sock_file { create unlink write };
+        class sock_file { create unlink write getattr};
         class dir { getattr search };
         }
 
         allow amazon_ssm_agent_t self:netlink_route_socket { bind create getattr nlmsg_read };
-        allow amazon_ssm_agent_t self:udp_socket { connect create getattr setopt };
-        allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:sock_file { create unlink write };
+        allow amazon_ssm_agent_t self:udp_socket { connect create getattr getopt setopt read write sendto };
+        allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:sock_file { create unlink write getattr };
         allow amazon_ssm_agent_t self:process setpgid;
-        allow amazon_ssm_agent_t self:tcp_socket { connect create getattr getopt setopt };
+        allow amazon_ssm_agent_t self:tcp_socket { connect create getattr getopt setopt read write sendto };
         allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:file { execute execute_no_trans };
         allow amazon_ssm_agent_t self:netlink_audit_socket { create nlmsg_relay };
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:file execute;
