@@ -9,8 +9,6 @@ type amazon_ssm_agent_t;
 type amazon_ssm_agent_exec_t;
 init_daemon_domain(amazon_ssm_agent_t, amazon_ssm_agent_exec_t)
 
-permissive amazon_ssm_agent_t;
-
 type amazon_ssm_agent_log_t;
 logging_log_file(amazon_ssm_agent_log_t)
 
