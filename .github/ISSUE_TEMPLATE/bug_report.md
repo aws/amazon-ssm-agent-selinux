@@ -27,6 +27,8 @@ If applicable, add screenshots to help explain your problem.
  - Kernel Version: 
  - Library version:
  - OS version
+ 
+**Violation Audit logs**
 
 **Additional context**
 Add any other context about the problem here.
