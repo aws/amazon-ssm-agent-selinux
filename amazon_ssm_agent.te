@@ -37,7 +37,6 @@ optional {
         type etc_t;
         type usr_t;
         type rpm_exec_t;
-        type rpm_script_t;
         type syslog_conf_t;
         type system_dbusd_t;
         type var_log_t;
@@ -52,7 +51,7 @@ optional {
         class lnk_file { relabelfrom relabelto };
         class sock_file { create unlink write getattr};
         class dir { getattr search relabelfrom relabelto remove_name add_name create write read };
-        class process { setexec execmem setrlimit setpgid noatsecure rlimitinh siginh setfscreate setsched };
+        class process { setexec execmem setrlimit setpgid setfscreate setsched };
         class capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
         class service { start status };
         class passwd passwd;
@@ -71,15 +70,14 @@ optional {
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:lnk_file relabelfrom;
         allow amazon_ssm_agent_t var_run_t:file { create unlink };
         allow amazon_ssm_agent_t rpm_exec_t:file relabelto;
-        allow amazon_ssm_agent_t self:process { setexec execmem setrlimit setpgid noatsecure rlimitinh siginh setfscreate setsched };
+        allow amazon_ssm_agent_t self:process { setexec execmem setrlimit setpgid setfscreate setsched };
         allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
         allow amazon_ssm_agent_t system_dbusd_t:dir { getattr search };
         allow amazon_ssm_agent_t system_dbusd_t:file { open read };
         allow amazon_ssm_agent_t bin_t:dir relabelto;
         allow amazon_ssm_agent_t bin_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr };
-        allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };      
-        allow amazon_ssm_agent_t rpm_script_t:process { noatsecure rlimitinh siginh };
+        allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t syslog_conf_t:file relabelfrom;
         allow amazon_ssm_agent_t systemd_unit_file_t:dir { add_name remove_name write };
         allow amazon_ssm_agent_t systemd_unit_file_t:file { create open relabelfrom relabelto rename setattr write getattr unlink };
@@ -95,6 +93,7 @@ optional {
         allow amazon_ssm_agent_t self:key write;
         allow amazon_ssm_agent_t useradd_exec_t:file { execute execute_no_trans };
         allow amazon_ssm_agent_t kernel_t:dir read;
+        allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:file { getattr relabelto read setattr unlink };
 
 }
 
@@ -271,6 +270,11 @@ term_use_unallocated_ttys(amazon_ssm_agent_t)
 files_delete_etc_files(amazon_ssm_agent_t)
 
 systemd_write_inherited_logind_sessions_pipes(amazon_ssm_agent_t)
+
+libs_delete_lib_symlinks(amazon_ssm_agent_t)
+
+libs_manage_lib_dirs(amazon_ssm_agent_t)
+
 
 optional {
         gen_require(`
