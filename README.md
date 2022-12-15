@@ -4,7 +4,13 @@ This is the SELinux policy for AWS SSM agent. Install this policy to confine you
 
 ## Installation instructions
 
-To build and install the SELinux policy, make sure that SELinux is in permissive or enforcing mode in `/etc/selinux/config` file and reboot the instance:
+Run the following commands:
+```
+sudo yum update
+sudo yum install policycoreutils-devel rpm-build git
+```
+
+To build and install the SELinux policy, make sure that SELinux is in permissive or enforcing mode in `/etc/selinux/config` file:
 ```
 # This file controls the state of SELinux on the system.
 # SELINUX= can take one of these three values:
@@ -18,7 +24,18 @@ SELINUX=enforcing
 #     mls - Multi Level Security protection.
 SELINUXTYPE=targeted
 ```
-Verify that your instance is in enforcing mode:
+Clone the repository, build and install using the commands below:
+
+```
+git clone https://github.com/aws/amazon-ssm-agent-selinux.git
+cd amazon-ssm-agent-selinux
+chmod +x amazon_ssm_agent.sh
+sudo ./amazon_ssm_agent.sh
+```
+Reboot the instance:
+
+Verify that your instance is in enforcing mode or permissive mode:
+
 ```
 sudo sestatus
 
@@ -32,21 +49,9 @@ Policy MLS status:              enabled
 Policy deny_unknown status:     allowed
 Max kernel policy version:      31
 
-
 ```
 
-Run the following commands:
 ```
-sudo yum install policycoreutils-devel rpm-build git
-git clone https://github.com/aws/amazon-ssm-agent-selinux.git
-cd amazon-ssm-agent-selinux
-chmod +x amazon_ssm_agent.sh
-sudo ./amazon_ssm_agent.sh
-```
-Reboot the instance or restart the SSM Agent service using:
-
-```
-sudo systemctl restart amazon-ssm-agent.service
 
 ps -efZ | grep -i amazon
 
