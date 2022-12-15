@@ -32,9 +32,7 @@ cd amazon-ssm-agent-selinux
 chmod +x amazon_ssm_agent.sh
 sudo ./amazon_ssm_agent.sh
 ```
-Reboot the instance:
-
-Verify that your instance is in enforcing mode or permissive mode:
+Reboot the instance and verify that your instance is in `enforcing` mode or `permissive` mode as chosen:
 
 ```
 sudo sestatus
