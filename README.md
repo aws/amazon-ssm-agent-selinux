@@ -48,6 +48,7 @@ Policy deny_unknown status:     allowed
 Max kernel policy version:      31
 
 ```
+List the SSM processes to check that they are confined:
 
 ```
 
