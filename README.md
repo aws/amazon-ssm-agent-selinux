@@ -10,7 +10,7 @@ sudo yum update
 sudo yum install policycoreutils-devel rpm-build git
 ```
 
-To build and install the SELinux policy, make sure that SELinux is in permissive or enforcing mode in `/etc/selinux/config` file:
+To build and install the SELinux policy, make sure that SELinux config file is in `permissive` or `enforcing` mode in `/etc/selinux/config` file:
 ```
 # This file controls the state of SELinux on the system.
 # SELINUX= can take one of these three values:
