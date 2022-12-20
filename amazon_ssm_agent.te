@@ -302,6 +302,12 @@ systemd_config_generic_services(amazon_ssm_agent_t)
 
 unconfined_server_signull(amazon_ssm_agent_t)
 
+files_manage_etc_dirs(amazon_ssm_agent_t)
+
+systemd_create_unit_file_lnk(amazon_ssm_agent_t)
+
+files_manage_etc_dirs(amazon_ssm_agent_t)
+
 optional {
         gen_require(`
                 type syslogd_var_run_t;

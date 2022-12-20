@@ -1,4 +1,4 @@
-.TH  "amazon_ssm_agent_selinux"  "8"  "22-12-05" "amazon_ssm_agent" "SELinux Policy amazon_ssm_agent"
+.TH  "amazon_ssm_agent_selinux"  "8"  "22-12-20" "amazon_ssm_agent" "SELinux Policy amazon_ssm_agent"
 .SH "NAME"
 amazon_ssm_agent_selinux \- Security Enhanced Linux Policy for the amazon_ssm_agent processes
 .SH "DESCRIPTION"
@@ -18,7 +18,7 @@ The amazon_ssm_agent_t SELinux type can be entered via the \fBamazon_ssm_agent_e
 
 The default entrypoint paths for the amazon_ssm_agent_t domain are the following:
 
-/usr/bin/amazon-ssm-agent
+/usr/bin/amazon-ssm-agent, /usr/bin/ssm-session-worker
 .SH PROCESS TYPES
 SELinux defines process types (domains) for each process running on the system
 .PP
@@ -82,14 +82,6 @@ If you want to deny any process from ptracing or debugging any other processes, 
 .EE
 
 .PP
-If you want to allow any process to mmap any file on system with attribute file_type, you must turn on the domain_can_mmap_files boolean. Enabled by default.
-
-.EX
-.B setsebool -P domain_can_mmap_files 1
-
-.EE
-
-.PP
 If you want to allow all domains write to kmsg_device, while kernel is executed with systemd.log_target=kmsg parameter, you must turn on the domain_can_write_kmsg boolean. Disabled by default.
 
 .EX
@@ -129,6 +121,14 @@ If you want to enable reading of urandom for all domains, you must turn on the g
 
 .EE
 
+.PP
+If you want to boolean to determine whether the system permits loading policy, setting enforcing mode, and changing boolean values.  Set this to true and you have to reboot to set it back, you must turn on the secure_mode_policyload boolean. Disabled by default.
+
+.EX
+.B setsebool -P secure_mode_policyload 1
+
+.EE
+
 .SH "MANAGED FILES"
 
 The SELinux process type amazon_ssm_agent_t can manage files labeled with the following file types.  The paths listed are the default paths for these file types.  Note the processes UID still need to have DAC permissions.
@@ -137,6 +137,662 @@ The SELinux process type amazon_ssm_agent_t can manage files labeled with the fo
 .B amazon_ssm_agent_var_lib_t
 
 	/var/lib/amazon/ssm(/.*)?
+.br
+
+.br
+.B bin_t
+
+	/bin/.*
+.br
+	/opt/(.*/)?bin(/.*)?
+.br
+	/usr/(.*/)?Bin(/.*)?
+.br
+	/usr/(.*/)?bin(/.*)?
+.br
+	/usr/(.*/)?sbin(/.*)?
+.br
+	/opt/(.*/)?sbin(/.*)?
+.br
+	/opt/(.*/)?libexec(/.*)?
+.br
+	/sbin/.*
+.br
+	/usr/lib(.*/)?bin(/.*)?
+.br
+	/usr/lib(.*/)?sbin(/.*)?
+.br
+	/lib/nut/.*
+.br
+	/etc/gdm/[^/]+
+.br
+	/root/bin(/.*)?
+.br
+	/etc/gdm/[^/]+/.*
+.br
+	/etc/cron.daily(/.*)?
+.br
+	/etc/cron.weekly(/.*)?
+.br
+	/etc/cron.hourly(/.*)?
+.br
+	/etc/cron.monthly(/.*)?
+.br
+	/usr/lib/.*/scripts(/.*)?
+.br
+	/usr/lib/.*/program(/.*)?
+.br
+	/usr/lib/[^/]*/run-mozilla\.sh
+.br
+	/usr/lib/[^/]*/mozilla-xremote-client
+.br
+	/usr/lib/[^/]*thunderbird[^/]*/thunderbird
+.br
+	/usr/lib/[^/]*thunderbird[^/]*/open-browser\.sh
+.br
+	/usr/lib/[^/]*thunderbird[^/]*/thunderbird-bin
+.br
+	/lib/udev/[^/]*
+.br
+	/etc/auto\.[^/]*
+.br
+	/etc/avahi/.*\.action
+.br
+	/usr/lib/qt.*/bin(/.*)?
+.br
+	/usr/lib/yp/.+
+.br
+	/var/ftp/bin(/.*)?
+.br
+	/usr/libexec(/.*)?
+.br
+	/usr/Brother(/.*)?
+.br
+	/usr/Printer(/.*)?
+.br
+	/usr/lib/ocf(/.*)?
+.br
+	/lib/upstart(/.*)?
+.br
+	/etc/kde/env(/.*)?
+.br
+	/etc/kde/kdm(/.*)?
+.br
+	/etc/mcelog/.*\.local
+.br
+	/etc/mcelog/.*\.setup
+.br
+	/etc/profile.d(/.*)?
+.br
+	/var/mailman.*/bin(/.*)?
+.br
+	/etc/mcelog/.*-error-trigger
+.br
+	/etc/lxdm/Pre.*
+.br
+	/etc/hotplug/.*rc
+.br
+	/usr/lib/cups(/.*)?
+.br
+	/etc/hotplug/.*agent
+.br
+	/usr/Brother/(.*/)?inf/setup.*
+.br
+	/usr/Brother/(.*/)?inf/brprintconf.*
+.br
+	/usr/lib/gvfs/.*
+.br
+	/usr/lib/dpkg/.+
+.br
+	/etc/lxdm/Post.*
+.br
+	/usr/lib/udev/[^/]*
+.br
+	/var/qmail/bin(/.*)?
+.br
+	/usr/lib/xfce4(/.*)?
+.br
+	/usr/lib/fence(/.*)?
+.br
+	/etc/X11/xinit(/.*)?
+.br
+	/lib/readahead(/.*)?
+.br
+	/etc/netplug\.d(/.*)?
+.br
+	/usr/lib/gimp/.*/plug-ins(/.*)?
+.br
+	/usr/lib/ipsec/.*
+.br
+	/etc/ppp/ip-up\..*
+.br
+	/usr/bin/pingus.*
+.br
+	/etc/cipe/ip-up.*
+.br
+	/usr/lib/dracut(/.*)?
+.br
+	/etc/pm/power\.d(/.*)?
+.br
+	/etc/pm/sleep\.d(/.*)?
+.br
+	/etc/redhat-lsb(/.*)?
+.br
+	/usr/lib/tuned/.*/.*\.sh
+.br
+	/usr/share/gems(/.*)?/helper-scripts(/.*)?
+.br
+	/usr/lib/xen/bin(/.*)?
+.br
+	/usr/lib/upstart(/.*)?
+.br
+	/usr/lib/courier(/.*)?
+.br
+	/etc/xen/scripts(/.*)?
+.br
+	/usr/share/tucan.*/tucan.py
+.br
+	/etc/ppp/ip-down\..*
+.br
+	/etc/ppp/ipv6-up\..*
+.br
+	/etc/cipe/ip-down.*
+.br
+	/usr/share/hplip/[^/]*
+.br
+	/etc/pki/tls/misc(/.*)?
+.br
+	/usr/lib/news/bin(/.*)?
+.br
+	/usr/lib/pm-utils(/.*)?
+.br
+	/etc/vmware-tools(/.*)?
+.br
+	/etc/dhcp/scripts(/.*)?
+.br
+	/etc/kde/shutdown(/.*)?
+.br
+	/etc/acpi/actions(/.*)?
+.br
+	/usr/lib/jvm/java(.*/)bin(/.*)
+.br
+	/usr/lib/tumbler-[^/]*/tumblerd
+.br
+	/usr/lib/bluetooth(/.*)?
+.br
+	/usr/lib/debug/bin(/.*)?
+.br
+	/usr/lib/readahead(/.*)?
+.br
+	/opt/google/chrome(/.*)?
+.br
+	/etc/munin/plugins(/.*)?
+.br
+	/usr/lib/xulrunner[^/]*/updater
+.br
+	/usr/lib/xulrunner[^/]*/crashreporter
+.br
+	/usr/lib/xulrunner[^/]*/xulrunner[^/]*
+.br
+	/usr/lib/ruby/gems(/.*)?/helper-scripts(/.*)?
+.br
+	/usr/share/debconf/.+
+.br
+	/etc/ppp/ipv6-down\..*
+.br
+	/usr/share/sectool/.*\.py
+.br
+	/usr/share/cluster/.*\.sh
+.br
+	/usr/lib/debug/sbin(/.*)?
+.br
+	/usr/share/ssl/misc(/.*)?
+.br
+	/usr/share/e16/misc(/.*)?
+.br
+	/usr/lib/ccache/bin(/.*)?
+.br
+	/etc/racoon/scripts(/.*)?
+.br
+	/usr/lib/ruby/gems/.*/agents(/.*)?
+.br
+	/usr/share/mc/extfs/.*
+.br
+	/usr/lib/apt/methods.+
+.br
+	/usr/lib/portage/bin(/.*)?
+.br
+	/usr/lib/mailman/bin(/.*)?
+.br
+	/etc/mcelog/triggers(/.*)?
+.br
+	/etc/dhcp/dhclient\.d(/.*)?
+.br
+	/emul/ia32-linux/bin(/.*)?
+.br
+	/usr/lib/erlang/erts.*/bin(/.*)?
+.br
+	/usr/lib/libreoffice(/.*)?/bin(/.*)?
+.br
+	/emul/ia32-linux/usr(/.*)?/bin(/.*)?
+.br
+	/emul/ia32-linux/usr(/.*)?/Bin(/.*)?
+.br
+	/emul/ia32-linux/usr(/.*)?/sbin(/.*)?
+.br
+	/usr/lib/thunderbird.*/mozilla-xremote-client
+.br
+	/usr/lib/cyrus-imapd/.*
+.br
+	/usr/share/createrepo(/.*)?
+.br
+	/usr/lib/mailman/mail(/.*)?
+.br
+	/emul/ia32-linux/sbin(/.*)?
+.br
+	/usr/share/shorewall6?/wait4ifup
+.br
+	/usr/share/shorewall6?/configpath
+.br
+	/usr/lib/kde4/libexec/.*
+.br
+	/usr/share/virtualbox/.*\.sh
+.br
+	/usr/lib/debug/usr/bin(/.*)?
+.br
+	/usr/share/wicd/daemon(/.*)?
+.br
+	/usr/share/hal/scripts(/.*)?
+.br
+	/lib/security/pam_krb5(/.*)?
+.br
+	/opt/google/talkplugin(/.*)?
+.br
+	/etc/PackageKit/events(/.*)?
+.br
+	/usr/lib/vmware-tools/(s)?bin32(/.*)?
+.br
+	/usr/lib/vmware-tools/(s)?bin64(/.*)?
+.br
+	/etc/gdm/XKeepsCrashing[^/]*
+.br
+	/usr/lib/debug/usr/sbin(/.*)?
+.br
+	/usr/share/smolt/client(/.*)?
+.br
+	/usr/lib/oracle/xe/apps(/.*)?
+.br
+	/usr/share/Modules/init(/.*)?
+.br
+	/usr/share/apr-0/build/[^/]+\.sh
+.br
+	/usr/lib/emacsen-common/.*
+.br
+	/usr/share/ajaxterm/qweb.py.*
+.br
+	/var/lib/glusterd/hooks/.*/.*\.sh
+.br
+	/var/lib/glusterd/hooks/.*/.*\.py
+.br
+	/usr/share/turboprint/lib(/.*)?
+.br
+	/usr/share/shorewall-lite(/.*)?
+.br
+	/usr/share/shorewall-perl(/.*)?
+.br
+	/var/lib/asterisk/agi-bin(/.*)?
+.br
+	/usr/linuxprinter/filters(/.*)?
+.br
+	/usr/lib/netsaint/plugins(/.*)?
+.br
+	/usr/lib/chromium-browser(/.*)?
+.br
+	/usr/lib/security/pam_krb5(/.*)?
+.br
+	/usr/share/shorewall6-lite(/.*)?
+.br
+	/usr/share/shorewall-shell(/.*)?
+.br
+	/usr/lib/nfs-utils/scripts(/.*)?
+.br
+	/usr/share/vhostmd/scripts(/.*)?
+.br
+	/usr/lib/debug/usr/libexec(/.*)?
+.br
+	/etc/ConsoleKit/run-seat\.d(/.*)?
+.br
+	/usr/lib/NetworkManager/nm\-.*
+.br
+	/usr/lib/nspluginwrapper/np.*
+.br
+	/usr/share/sandbox/sandboxX.sh
+.br
+	/usr/lib/ConsoleKit/scripts(/.*)?
+.br
+	/usr/share/ajaxterm/ajaxterm.py.*
+.br
+	/usr/lib/pgsql/test/regress/.*\.sh
+.br
+	/usr/share/denyhosts/plugins(/.*)?
+.br
+	/usr/share/denyhosts/scripts(/.*)?
+.br
+	/emul/ia32-linux/usr/libexec(/.*)?
+.br
+	/usr/lib/mediawiki/math/texvc.*
+.br
+	/usr/lib/nagios/plugins/utils.sh
+.br
+	/usr/lib/nagios/plugins/utils.pm
+.br
+	/usr/share/gitolite3/commands(/.*)?
+.br
+	/usr/share/PackageKit/helpers(/.*)?
+.br
+	/usr/lib/systemd/system-sleep(/.*)?
+.br
+	/etc/ConsoleKit/run-session\.d(/.*)?
+.br
+	/usr/share/cluster/checkquorum.*
+.br
+	/etc/hotplug\.d/default/default.*
+.br
+	/usr/lib/gnome-settings-daemon/.*
+.br
+	/opt/gutenprint/cups/lib/filter(/.*)?
+.br
+	/usr/share/system-config-network(/netconfig)?/[^/]+\.py
+.br
+	/usr/lib/ConsoleKit/run-session\.d(/.*)?
+.br
+	/etc/sysconfig/network-scripts/net.*
+.br
+	/etc/sysconfig/network-scripts/ifup.*
+.br
+	/etc/sysconfig/network-scripts/init.*
+.br
+	/usr/share/kde4/apps/kajongg/kajongg.py
+.br
+	/usr/share/texlive/texmf/web2c/mktex(dir|nam|upd)
+.br
+	/etc/sysconfig/network-scripts/ifdown.*
+.br
+	/usr/share/system-config-selinux/polgengui.py
+.br
+	/opt/OpenPrinting-Gutenprint/cups/lib/filter(/.*)?
+.br
+	/usr/share/gedit-2/plugins/externaltools/tools(/.*)?
+.br
+	/bin
+.br
+	/sbin
+.br
+	/usr/bin
+.br
+	/dev/MAKEDEV
+.br
+	/var/qmail/rc
+.br
+	/etc/mail/make
+.br
+	/var/qmail/bin
+.br
+	/bin/mountpoint
+.br
+	/usr/lib/rpm/rpmd
+.br
+	/usr/lib/rpm/rpmq
+.br
+	/usr/lib/rpm/rpmv
+.br
+	/usr/lib/rpm/rpmk
+.br
+	/lib/udev/scsi_id
+.br
+	/sbin/mkfs\.cramfs
+.br
+	/etc/xen/qemu-ifup
+.br
+	/etc/lxdm/Xsession
+.br
+	/etc/sysconfig/init
+.br
+	/usr/bin/mountpoint
+.br
+	/etc/apcupsd/commok
+.br
+	/usr/lib/sftp-server
+.br
+	/etc/sysconfig/crond
+.br
+	/etc/lxdm/LoginReady
+.br
+	/usr/sbin/mkfs\.cramfs
+.br
+	/usr/lib/udev/scsi_id
+.br
+	/etc/X11/xdm/Xsetup_0
+.br
+	/etc/apcupsd/changeme
+.br
+	/usr/lib/iscan/network
+.br
+	/etc/apcupsd/onbattery
+.br
+	/usr/lib/yaboot/addnote
+.br
+	/etc/apcupsd/apccontrol
+.br
+	/etc/apcupsd/offbattery
+.br
+	/usr/lib/wicd/monitor\.py
+.br
+	/etc/X11/xdm/GiveConsole
+.br
+	/etc/X11/xdm/TakeConsole
+.br
+	/etc/apcupsd/commfailure
+.br
+	/usr/lib/misc/sftp-server
+.br
+	/etc/sysconfig/netconsole
+.br
+	/lib/udev/devices/MAKEDEV
+.br
+	/etc/rc\.d/init\.d/functions
+.br
+	/etc/apcupsd/masterconnect
+.br
+	/etc/apcupsd/mastertimeout
+.br
+	/var/lib/iscan/interpreter
+.br
+	/usr/share/clamav/clamd-gen
+.br
+	/usr/share/pydict/pydict\.py
+.br
+	/sbin/insmod_ksymoops_clean
+.br
+	/etc/mgetty\+sendfax/new_fax
+.br
+	/usr/lib/xfce4/panel/migrate
+.br
+	/usr/lib/xfce4/panel/wrapper
+.br
+	/etc/sysconfig/readonly-root
+.br
+	/etc/wdmd\.d/checkquorum\.wdmd
+.br
+	/usr/lib/xfce4/xfconf/xfconfd
+.br
+	/usr/lib/vte/gnome-pty-helper
+.br
+	/usr/lib/udev/devices/MAKEDEV
+.br
+	/usr/share/cvs/contrib/rcs2log
+.br
+	/usr/share/hwbrowser/hwbrowser
+.br
+	/usr/share/shorewall/getparams
+.br
+	/usr/X11R6/lib/X11/xkb/xkbcomp
+.br
+	/usr/lib/virtualbox/VBoxManage
+.br
+	/usr/share/cluster/SAPDatabase
+.br
+	/usr/share/cluster/SAPInstance
+.br
+	/usr/share/apr-0/build/libtool
+.br
+	/usr/lib/nagios/plugins/negate
+.br
+	/usr/lib/nagios/plugins/urlize
+.br
+	/etc/hotplug/hotplug\.functions
+.br
+	/usr/share/texmf/web2c/mktexdir
+.br
+	/usr/share/texmf/web2c/mktexnam
+.br
+	/usr/share/texmf/web2c/mktexupd
+.br
+	/usr/sbin/insmod_ksymoops_clean
+.br
+	/usr/share/shorewall/compiler\.pl
+.br
+	/var/lib/dirsrv/scripts-INSTANCE
+.br
+	/usr/share/dayplanner/dayplanner
+.br
+	/usr/libexec/openssh/sftp-server
+.br
+	/usr/share/clamav/freshclam-sleep
+.br
+	/usr/share/texmf/texconfig/tcfmgr
+.br
+	/usr/share/cluster/ocf-shellfuncs
+.br
+	/usr/share/cluster/svclib_nfslock
+.br
+	/usr/lib/xfce4/exo-1/exo-helper-1
+.br
+	/usr/share/fedora-usermgmt/wrapper
+.br
+	/usr/share/pwlib/make/ptlib-config
+.br
+	/usr/share/munin/plugins/plugin\.sh
+.br
+	/usr/share/printconf/util/print\.py
+.br
+	/usr/lib/xfce4/xfwm4/helper-dialog
+.br
+	/etc/pki/tls/certs/make-dummy-cert
+.br
+	/usr/share/rhn/rhn_applet/applet\.py
+.br
+	/usr/share/selinux/devel/policygentool
+.br
+	/usr/share/gnucash/finance-quote-check
+.br
+	/usr/share/spamassassin/sa-update\.cron
+.br
+	/usr/share/switchdesk/switchdesk-gui\.py
+.br
+	/usr/share/authconfig/authconfig-gtk\.py
+.br
+	/usr/share/authconfig/authconfig-tui\.py
+.br
+	/usr/share/gnucash/finance-quote-helper
+.br
+	/usr/share/gitolite/hooks/common/update
+.br
+	/usr/lib/xfce4/exo-1/exo-compose-mail-1
+.br
+	/usr/share/system-config-services/gui\.py
+.br
+	/usr/lib/avahi/avahi-daemon-check-dns\.sh
+.br
+	/lib/security/pam_krb5/pam_krb5_storetmp
+.br
+	/usr/share/system-config-netboot/pxeos\.py
+.br
+	/usr/lib/xfce4/session/balou-export-theme
+.br
+	/usr/share/system-config-selinux/polgen\.py
+.br
+	/usr/share/system-config-nfs/nfs-export\.py
+.br
+	/usr/share/system-config-printer/applet\.py
+.br
+	/usr/share/PackageKit/pk-upgrade-distro\.sh
+.br
+	/usr/lib/xfce4/session/balou-install-theme
+.br
+	/usr/share/system-config-netboot/pxeboot\.py
+.br
+	/usr/lib/xfce4/session/xfsm-shutdown-helper
+.br
+	/usr/share/rhn/rhn_applet/needed-packages\.py
+.br
+	/usr/lib64/security/pam_krb5/pam_krb5_cchelper
+.br
+	/usr/share/system-logviewer/system-logviewer\.py
+.br
+	/usr/share/system-config-network/neat-control\.py
+.br
+	/usr/share/system-config-services/serviceconf\.py
+.br
+	/usr/share/hal/device-manager/hal-device-manager
+.br
+	/usr/share/system-config-lvm/system-config-lvm\.py
+.br
+	/usr/share/system-config-nfs/system-config-nfs\.py
+.br
+	/usr/share/system-config-mouse/system-config-mouse
+.br
+	/usr/share/system-config-httpd/system-config-httpd
+.br
+	/usr/share/system-config-users/system-config-users
+.br
+	/usr/share/system-config-date/system-config-date\.py
+.br
+	/usr/share/doc/ghc/html/libraries/gen_contents_index
+.br
+	/usr/share/gitolite/hooks/gitolite-admin/post-update
+.br
+	/usr/share/system-config-samba/system-config-samba\.py
+.br
+	/usr/share/system-config-display/system-config-display
+.br
+	/usr/share/system-config-keyboard/system-config-keyboard
+.br
+	/usr/share/system-config-language/system-config-language
+.br
+	/usr/share/system-config-services/system-config-services
+.br
+	/usr/share/system-config-netboot/system-config-netboot\.py
+.br
+	/usr/share/system-config-selinux/system-config-selinux\.py
+.br
+	/usr/share/system-config-soundcard/system-config-soundcard
+.br
+	/usr/share/system-config-rootpassword/system-config-rootpassword
+.br
+	/usr/share/system-config-securitylevel/system-config-securitylevel\.py
+.br
+
+.br
+.B boot_t
+
+	/boot/.*
+.br
+	/vmlinuz.*
+.br
+	/initrd\.img.*
+.br
+	/boot
 .br
 
 .br
@@ -192,6 +848,22 @@ The SELinux process type amazon_ssm_agent_t can manage files labeled with the fo
 .br
 
 .br
+.B exec_type
+
+
+.br
+.B initrc_var_run_t
+
+	/var/run/utmp
+.br
+	/var/run/random-seed
+.br
+	/var/run/runlevel\.dir
+.br
+	/var/run/setmixer_flag
+.br
+
+.br
 .B klogd_tmp_t
 
 
@@ -202,9 +874,125 @@ The SELinux process type amazon_ssm_agent_t can manage files labeled with the fo
 .br
 
 .br
+.B lib_t
+
+	/lib/.*
+.br
+	/usr/.*\.so(\.[^/]*)*
+.br
+	/opt/.*\.so(\.[^/]*)*
+.br
+	/opt/(.*/)?lib(/.*)?
+.br
+	/usr/(.*/)?lib(/.*)?
+.br
+	/opt/(.*/)?jre/.+\.jar
+.br
+	/opt/(.*/)?java/.+\.jar
+.br
+	/usr/(.*/)?java/.+\.jar
+.br
+	/usr/(.*/)?java/.+\.jsa
+.br
+	/usr/lib/.*
+.br
+	/usr/lib/.*/program(/.*)?\.so
+.br
+	/var/ftp/lib(/.*)?
+.br
+	/opt/Acrobat[5-9]/Reader/intellinux/plugins/.*\.api
+.br
+	/opt/ibm/java.*/jre/.+\.jar
+.br
+	/usr/lib/gvfs/.*\.so(\.[^/]*)*
+.br
+	/usr/lib/pgsql/.*\.so.*
+.br
+	/usr/lib/xfce4/.*\.so.*
+.br
+	/usr/lib/dovecot/(.*/)?lib.*\.so.*
+.br
+	/opt/Adobe/Reader.?/Reader/intellinux/SPPlugins/.*\.ap[il]
+.br
+	/emul/ia32-linux/lib(/.*)?
+.br
+	/emul/ia32-linux/usr(/.*)?/lib(/.*)?
+.br
+	/emul/ia32-linux/usr(/.*)?/java/.*\.jar
+.br
+	/emul/ia32-linux/usr(/.*)?/java/.*\.jsa
+.br
+	/emul/ia32-linux/usr(/.*)?/java/.+\.so(\.[^/]*)*
+.br
+	/var/named/chroot/lib(/.*)?
+.br
+	/usr/lib/erlang/erts-[^/]*/bin/epmd
+.br
+	/var/spool/postfix/lib(/.*)?
+.br
+	/var/spool/postfix/usr(/.*)?
+.br
+	/var/mailman/pythonlib(/.*)?/.+\.so(\..*)?
+.br
+	/var/spool/postfix/lib64(/.*)?
+.br
+	/var/named/chroot/usr/lib(/.*)?
+.br
+	/usr/lib/nspluginwrapper/np.*\.so
+.br
+	/usr/lib/pgsql/test/regress/.*\.so.*
+.br
+	/usr/share/hplip/prnt/plugins(/.*)?
+.br
+	/var/lib/spamassassin/compiled/.*\.so.*
+.br
+	/lib
+.br
+	/lib64
+.br
+	/usr/lib
+.br
+	/etc/ppp/plugins/rp-pppoe\.so
+.br
+	/usr/share/rhn/rhn_applet/eggtrayiconmodule\.so
+.br
+
+.br
 .B logfile
 
 	all log files
+.br
+
+.br
+.B mail_spool_t
+
+	/var/mail(/.*)?
+.br
+	/var/spool/imap(/.*)?
+.br
+	/var/spool/mail(/.*)?
+.br
+	/var/spool/smtpd(/.*)?
+.br
+
+.br
+.B passwd_file_t
+
+	/etc/group[-\+]?
+.br
+	/etc/passwd[-\+]?
+.br
+	/etc/passwd\.adjunct.*
+.br
+	/etc/ptmptmp
+.br
+	/etc/\.pwd\.lock
+.br
+	/etc/group\.lock
+.br
+	/etc/passwd\.OLD
+.br
+	/etc/passwd\.lock
 .br
 
 .br
@@ -215,6 +1003,58 @@ The SELinux process type amazon_ssm_agent_t can manage files labeled with the fo
 	/
 .br
 	/initrd
+.br
+
+.br
+.B rpm_var_cache_t
+
+	/var/cache/yum(/.*)?
+.br
+	/var/cache/dnf(/.*)?
+.br
+	/var/spool/up2date(/.*)?
+.br
+	/var/cache/PackageKit(/.*)?
+.br
+
+.br
+.B rpm_var_lib_t
+
+	/var/lib/rpm(/.*)?
+.br
+	/var/lib/yum(/.*)?
+.br
+	/var/lib/dnf(/.*)?
+.br
+	/usr/share/rpm(/.*)?
+.br
+	/var/lib/PackageKit(/.*)?
+.br
+	/var/lib/alternatives(/.*)?
+.br
+	/var/lib/rpmrebuilddb.*(/.*)?
+.br
+
+.br
+.B security_t
+
+	/selinux
+.br
+
+.br
+.B shadow_t
+
+	/etc/shadow.*
+.br
+	/etc/gshadow.*
+.br
+	/etc/nshadow.*
+.br
+	/var/db/shadow.*
+.br
+	/etc/security/opasswd
+.br
+	/etc/security/opasswd\.old
 .br
 
 .br
@@ -266,11 +1106,91 @@ The SELinux process type amazon_ssm_agent_t can manage files labeled with the fo
 .br
 
 .br
+.B system_conf_t
+
+	/ostree/repo(/.*)?
+.br
+	/etc/yum\.repos\.d(/.*)?
+.br
+	/etc/sysctl\.conf(\.old)?
+.br
+	/etc/sysconfig/ip6?tables.*
+.br
+	/etc/ostree/remotes.d(/.*)?
+.br
+	/etc/sysconfig/ipvsadm.*
+.br
+	/etc/sysconfig/ebtables.*
+.br
+	/etc/sysconfig/system-config-firewall.*
+.br
+	/ostree/deploy/rhel-atomic-host/deploy(/.*)?
+.br
+
+.br
 .B systemd_passwd_var_run_t
 
 	/var/run/systemd/ask-password(/.*)?
 .br
 	/var/run/systemd/ask-password-block(/.*)?
+.br
+
+.br
+.B systemd_unit_file_t
+
+	/usr/lib/systemd/system(/.*)?
+.br
+	/usr/lib/dracut/modules.d/.*\.service
+.br
+
+.br
+.B tmp_t
+
+	/sandbox(/.*)?
+.br
+	/tmp
+.br
+	/usr/tmp
+.br
+	/var/tmp
+.br
+	/var/tmp
+.br
+	/tmp-inst
+.br
+	/var/tmp-inst
+.br
+	/var/tmp/vi\.recover
+.br
+
+.br
+.B user_home_t
+
+	/home/[^/]+/.+
+.br
+
+.br
+.B var_lib_t
+
+	/opt/(.*/)?var/lib(/.*)?
+.br
+	/var/lib(/.*)?
+.br
+
+.br
+.B var_run_t
+
+	/run/.*
+.br
+	/var/run/.*
+.br
+	/run
+.br
+	/var/run
+.br
+	/var/run
+.br
+	/var/spool/postfix/pid
 .br
 
 .SH FILE CONTEXTS
@@ -304,6 +1224,10 @@ Note: SELinux often uses regular expressions to specify labels that match multip
 
 - Set files with the amazon_ssm_agent_exec_t type, if you want to transition an executable to the amazon_ssm_agent_t domain.
 
+.br
+.TP 5
+Paths:
+/usr/bin/amazon-ssm-agent, /usr/bin/ssm-session-worker
 
 .EX
 .PP
