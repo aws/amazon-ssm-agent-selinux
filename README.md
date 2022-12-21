@@ -6,6 +6,12 @@ This is the SELinux policy for AWS SSM agent. Install this policy to confine you
 
 ###### Note - It is recommended to start SELinux in permissive mode before enabling it in enforcement mode.
 
+Make sure Amazon SSM agent service is installed and running before compiling and installing the SELinux policy:
+```
+sudo yum install amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
+```
+
 Run the following commands:
 ```
 sudo yum update
