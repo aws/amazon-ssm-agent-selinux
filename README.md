@@ -1,5 +1,7 @@
 ## AMAZON-SSM-AGENT-SELINUX POLICY
 
+###### Note - This policy has been tested to work on AL2 only for now. Please make sure that the OS you are using it AL2.
+
 This is the SELinux policy for AWS SSM agent. Install this policy to confine your SSM agent processes.
 
 ## Installation instructions
