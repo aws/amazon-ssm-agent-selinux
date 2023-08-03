@@ -47,6 +47,18 @@ optional {
         type passwd_exec_t;
         type rpm_var_lib_t;
         type chkpwd_exec_t;
+        type unconfined_t;
+        type cloud_init_exec_t;
+        type user_cron_spool_t;
+        type system_cronjob_t;
+        type crontab_exec_t;
+        type policykit_t;
+        type irqbalance_t;
+        type tuned_t;
+        type tmp_t;
+        type dhcpc_t;
+        type systemd_hostnamed_t;
+        type init_var_run_t;
         class netlink_audit_socket { read write create nlmsg_relay };
         class netlink_route_socket { bind create getattr nlmsg_read read write };
         class udp_socket { connect create getattr getopt setopt read write sendto };
@@ -57,7 +69,7 @@ optional {
         class sock_file { create unlink write getattr};
         class dir { getattr search relabelfrom relabelto remove_name add_name create write read };
         class process { setexec execmem setrlimit setpgid setfscreate setsched };
-        class capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
+        class capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid sys_resource };
         class service { start status stop };
         class passwd passwd;
         class netlink_selinux_socket { bind create };
@@ -77,7 +89,7 @@ optional {
         allow amazon_ssm_agent_t var_run_t:file { create unlink };
         allow amazon_ssm_agent_t rpm_exec_t:file relabelto;
         allow amazon_ssm_agent_t self:process { setexec execmem setrlimit setpgid setfscreate setsched };
-        allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
+        allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid sys_resource };
         allow amazon_ssm_agent_t system_dbusd_t:dir { getattr search };
         allow amazon_ssm_agent_t system_dbusd_t:file { open read };
         allow amazon_ssm_agent_t bin_t:dir relabelto;
@@ -108,6 +120,24 @@ optional {
         allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:service stop;
         allow amazon_ssm_agent_t boot_t:file { create relabelfrom };
         allow amazon_ssm_agent_t chkpwd_exec_t:file execute_no_trans;
+        allow amazon_ssm_agent_t cloud_init_exec_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t init_var_run_t:file { read open getattr };
+        allow amazon_ssm_agent_t dhcpc_t:dir { getattr search };
+        allow amazon_ssm_agent_t dhcpc_t:file { open read };
+        allow amazon_ssm_agent_t irqbalance_t:dir { getattr search };
+        allow amazon_ssm_agent_t irqbalance_t:file { open read };
+        allow amazon_ssm_agent_t policykit_t:dir { getattr search };
+        allow amazon_ssm_agent_t policykit_t:file { open read };
+        allow amazon_ssm_agent_t system_cronjob_t:dir getattr;
+        allow amazon_ssm_agent_t user_cron_spool_t:dir { search getattr write add_name setattr rename remove_name };
+        allow amazon_ssm_agent_t user_cron_spool_t:file { create open rename setattr };
+        allow amazon_ssm_agent_t crontab_exec_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t systemd_hostnamed_t:dir getattr;
+        allow amazon_ssm_agent_t tmp_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t tuned_t:dir { getattr search };
+        allow amazon_ssm_agent_t tuned_t:file { open read };
+        allow amazon_ssm_agent_t unconfined_t:dir { getattr search };
+        allow amazon_ssm_agent_t unconfined_t:file { open read };
 }
 
 auth_exec_chkpwd(amazon_ssm_agent_t)
@@ -311,6 +341,10 @@ files_manage_etc_dirs(amazon_ssm_agent_t)
 systemd_create_unit_file_lnk(amazon_ssm_agent_t)
 
 files_manage_etc_dirs(amazon_ssm_agent_t)
+
+miscfiles_manage_generic_cert_dirs(amazon_ssm_agent_t)
+cloudform_read_lib_files(amazon_ssm_agent_t)
+cloudform_read_lib_lnk_files(amazon_ssm_agent_t)
 
 optional {
         gen_require(`
