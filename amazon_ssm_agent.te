@@ -46,6 +46,7 @@ optional {
         type systemd_unit_file_t;
         type passwd_exec_t;
         type rpm_var_lib_t;
+        type chkpwd_exec_t;
         class netlink_audit_socket { read write create nlmsg_relay };
         class netlink_route_socket { bind create getattr nlmsg_read read write };
         class udp_socket { connect create getattr getopt setopt read write sendto };
@@ -81,7 +82,7 @@ optional {
         allow amazon_ssm_agent_t system_dbusd_t:file { open read };
         allow amazon_ssm_agent_t bin_t:dir relabelto;
         allow amazon_ssm_agent_t bin_t:lnk_file { relabelfrom relabelto };
-        allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr };
+        allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr write};
         allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t syslog_conf_t:file relabelfrom;
         allow amazon_ssm_agent_t systemd_unit_file_t:dir { add_name remove_name write };
@@ -106,7 +107,10 @@ optional {
         allow amazon_ssm_agent_t rpm_var_lib_t:dir create;
         allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:service stop;
         allow amazon_ssm_agent_t boot_t:file { create relabelfrom };
+        allow amazon_ssm_agent_t chkpwd_exec_t:file execute_no_trans;
 }
+
+auth_exec_chkpwd(amazon_ssm_agent_t)
 
 manage_dirs_pattern(amazon_ssm_agent_t, amazon_ssm_agent_log_t, amazon_ssm_agent_log_t)
 manage_files_pattern(amazon_ssm_agent_t, amazon_ssm_agent_log_t, amazon_ssm_agent_log_t)
