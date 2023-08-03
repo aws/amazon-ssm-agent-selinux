@@ -3,7 +3,7 @@
 
 %define relabel_files() \
 restorecon -R /usr/bin/amazon-ssm-agent; \
-restorecon -R /usr/lib/systemd/system/amazon-ssm-agent.service; \
+restorecon -R /etc/systemd/system/amazon-ssm-agent.service; \
 restorecon -R /var/lib/amazon/ssm; \
 restorecon -R /var/log/amazon/ssm; \
 
