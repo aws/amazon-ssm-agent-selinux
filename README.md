@@ -1,6 +1,7 @@
 ## AMAZON-SSM-AGENT-SELINUX POLICY
 
 ###### Note - This policy has been tested to work on AL2 only for now. Please make sure that the OS you are using is AL2.
+###### Note - This policy forfeits sudo access on the machine that utilizes it i.e. you will lose access to the root level user.
 
 This is the SELinux policy for AWS SSM agent. Install this policy to confine your SSM agent processes.
 
