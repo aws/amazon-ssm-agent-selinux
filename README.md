@@ -1,6 +1,7 @@
 ## AMAZON-SSM-AGENT-SELINUX POLICY
 
-###### Note - This policy has been tested to work on AL2 only for now. Please make sure that the OS you are using is AL2.
+###### Note - We provide a base policy, if users want more permissions, then they should understand how to update the policy to allow that access, and scope it appropriately for their use case.
+###### Note - This policy has been tested to work on AL2 and AL2023 only for now. Please make sure that the OS you are using is AL2 or AL2023.
 ###### Note - This policy forfeits sudo access on the machine that utilizes it i.e. you will lose access to the root level user.
 
 This is the SELinux policy for AWS SSM agent. Install this policy to confine your SSM agent processes.
@@ -19,6 +20,11 @@ Run the following commands:
 ```
 sudo yum update
 sudo yum install policycoreutils-devel rpm-build git
+```
+
+If you are on AL2023 run the following command
+```
+sudo yum install freeipa-selinux.noarch
 ```
 
 To build and install the SELinux policy, make sure that SELinux config file is in `permissive` or `enforcing` mode in `/etc/selinux/config` file:

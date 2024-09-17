@@ -46,6 +46,9 @@ optional {
         type systemd_unit_file_t;
         type passwd_exec_t;
         type rpm_var_lib_t;
+        type sssd_exec_t;
+        type user_home_dir_t;
+        type user_home_t;
         class netlink_audit_socket { read write create nlmsg_relay };
         class netlink_route_socket { bind create getattr nlmsg_read read write };
         class udp_socket { connect create getattr getopt setopt read write sendto };
@@ -63,13 +66,13 @@ optional {
         class key write;
 
         }
-        
+
         allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:dir { relabelfrom relabelto };
         allow amazon_ssm_agent_t self:netlink_route_socket { bind create getattr nlmsg_read read write };
         allow amazon_ssm_agent_t self:udp_socket { connect create getattr getopt setopt read write sendto };
         allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:sock_file { create unlink write getattr };
         allow amazon_ssm_agent_t self:tcp_socket { connect create getattr getopt setopt read write sendto bind };
-        allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t amazon_ssm_agent_var_lib_t:file { execute execute_no_trans map };
         allow amazon_ssm_agent_t self:netlink_audit_socket { read write create nlmsg_relay  };
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:file execute;
         allow amazon_ssm_agent_t amazon_ssm_agent_log_t:lnk_file relabelfrom;
@@ -81,7 +84,7 @@ optional {
         allow amazon_ssm_agent_t system_dbusd_t:file { open read };
         allow amazon_ssm_agent_t bin_t:dir relabelto;
         allow amazon_ssm_agent_t bin_t:lnk_file { relabelfrom relabelto };
-        allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr };
+        allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr create write};
         allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t syslog_conf_t:file relabelfrom;
         allow amazon_ssm_agent_t systemd_unit_file_t:dir { add_name remove_name write };
@@ -90,22 +93,26 @@ optional {
         allow amazon_ssm_agent_t usr_t:file { relabelfrom relabelto };
         allow amazon_ssm_agent_t var_log_t:lnk_file relabelto;
         allow amazon_ssm_agent_t var_run_t:dir { create relabelfrom relabelto };
-        allow amazon_ssm_agent_t var_run_t:lnk_file { relabelfrom relabelto };  
+        allow amazon_ssm_agent_t var_run_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:service { start status };
         allow amazon_ssm_agent_t self:netlink_audit_socket write;
         allow amazon_ssm_agent_t self:passwd passwd;
         allow amazon_ssm_agent_t self:netlink_selinux_socket { bind create };
         allow amazon_ssm_agent_t self:key write;
-        allow amazon_ssm_agent_t useradd_exec_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t useradd_exec_t:file { execute execute_no_trans map };
         allow amazon_ssm_agent_t kernel_t:dir read;
         allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:file {open rename getattr relabelto read setattr unlink };
         allow amazon_ssm_agent_t passwd_exec_t:file execute_no_trans;
-        allow amazon_ssm_agent_t amazon_ssm_agent_exec_t:file relabelto;
+        allow amazon_ssm_agent_t amazon_ssm_agent_exec_t:file { relabelto execute_no_trans };
         allow amazon_ssm_agent_t lib_t:lnk_file { create relabelfrom relabelto rename setattr };
         allow amazon_ssm_agent_t lib_t:dir { relabelto relabelfrom };
         allow amazon_ssm_agent_t rpm_var_lib_t:dir create;
         allow amazon_ssm_agent_t amazon_ssm_agent_unit_file_t:service stop;
         allow amazon_ssm_agent_t boot_t:file { create relabelfrom };
+        allow amazon_ssm_agent_t sssd_exec_t:file { execute execute_no_trans };
+        allow amazon_ssm_agent_t user_home_dir_t:dir create;
+        allow amazon_ssm_agent_t user_home_t:file create;
+
 }
 
 manage_dirs_pattern(amazon_ssm_agent_t, amazon_ssm_agent_log_t, amazon_ssm_agent_log_t)
