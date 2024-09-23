@@ -1,6 +1,6 @@
 ## AMAZON-SSM-AGENT-SELINUX POLICY
 
-###### Note - We provide a base policy, if users want more permissions, then they should understand how to update the policy to allow that access, and scope it appropriately for their use case.
+###### Note - We provide a base SELinux policy that allows basic Amazon-ssm-agent functionality. If users want more permissions, then they should review the SELinux documentation to understand how to update the policy to allow additional access, and scope it appropriately for their use case.
 ###### Note - This policy has been tested to work on AL2 and AL2023 only for now. Please make sure that the OS you are using is AL2 or AL2023.
 ###### Note - This policy forfeits sudo access on the machine that utilizes it i.e. you will lose access to the root level user.
 

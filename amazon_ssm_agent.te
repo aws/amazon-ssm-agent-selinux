@@ -37,6 +37,7 @@ optional {
         type bin_t;
         type var_run_t;
         type etc_t;
+        type var_t;
         type usr_t;
         type rpm_exec_t;
         type syslog_conf_t;
@@ -79,11 +80,12 @@ optional {
         allow amazon_ssm_agent_t var_run_t:file { create unlink };
         allow amazon_ssm_agent_t rpm_exec_t:file relabelto;
         allow amazon_ssm_agent_t self:process { setexec execmem setrlimit setpgid setfscreate setsched };
-        allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid };
+        allow amazon_ssm_agent_t self:capability { linux_immutable net_admin audit_write setfcap dac_override dac_read_search sys_ptrace chown fowner fsetid net_admin kill setgid setuid sys_resource };
         allow amazon_ssm_agent_t system_dbusd_t:dir { getattr search };
         allow amazon_ssm_agent_t system_dbusd_t:file { open read };
         allow amazon_ssm_agent_t bin_t:dir relabelto;
         allow amazon_ssm_agent_t bin_t:lnk_file { relabelfrom relabelto };
+        allow amazon_ssm_agent_t etc_t:dir { relabelfrom relabelto };
         allow amazon_ssm_agent_t etc_t:file { relabelto rename setattr create write};
         allow amazon_ssm_agent_t etc_t:lnk_file { relabelfrom relabelto };
         allow amazon_ssm_agent_t syslog_conf_t:file relabelfrom;
@@ -91,6 +93,7 @@ optional {
         allow amazon_ssm_agent_t systemd_unit_file_t:file { create open relabelfrom relabelto rename setattr write getattr unlink };
         allow amazon_ssm_agent_t usr_t:dir { relabelfrom relabelto };
         allow amazon_ssm_agent_t usr_t:file { relabelfrom relabelto };
+        allow amazon_ssm_agent_t var_t:dir { relabelto rmdir };
         allow amazon_ssm_agent_t var_log_t:lnk_file relabelto;
         allow amazon_ssm_agent_t var_run_t:dir { create relabelfrom relabelto };
         allow amazon_ssm_agent_t var_run_t:lnk_file { relabelfrom relabelto };
